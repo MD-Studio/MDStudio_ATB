@@ -12,7 +12,8 @@ import json
 import re
 
 from lie_atb import ATBServerApi, ATB_Mol
-from lie_atb.settings import *
+from lie_atb.settings import (
+    SETTINGS, SUPPORTED_FILE_EXTENTIONS, SUPPORTED_STRUCTURE_FILE_FORMATS, SUPPORTED_TOPOLOGY_FILE_FORMATS)
 from mdstudio.api.endpoint import endpoint
 from mdstudio.component.session import ComponentSession
 
@@ -149,8 +150,9 @@ class ATBWampApi(ComponentSession):
         molecule = self._exceute_api_call(api.Molecules.molid, molid=request['molid'])
         filename = None
         if 'workdir' in request:
-            filename = os.path.join(request['workdir'], '{0}.{1}'.format(request['fformat'],
-                                                            SUPPORTED_FILE_EXTENTIONS.get(request['fformat'], 'txt')))
+            workdir = os.path.abspath(request['workdir'])
+            filename = os.path.join(workdir, '{0}.{1}'.format(
+                request['fformat'], SUPPORTED_FILE_EXTENTIONS.get(request['fformat'], 'txt')))
 
         if molecule and isinstance(molecule, ATB_Mol):
             structure = self._exceute_api_call(molecule.download_file, file=request['fformat'],
@@ -196,8 +198,10 @@ class ATBWampApi(ComponentSession):
         molecule = self._exceute_api_call(api.Molecules.molid, molid=request['molid'])
         filename = None
         if 'workdir' in request:
-            filename = os.path.join(request['workdir'], '{0}.{1}'.format(request['fformat'],
-                                                            SUPPORTED_FILE_EXTENTIONS.get(request['fformat'], 'top')))
+            workdir = os.path.abspath(request['workdir'])
+            filename = os.path.join(
+                workdir, '{0}.{1}'.format(
+                    request['fformat'], SUPPORTED_FILE_EXTENTIONS.get(request['fformat'], 'top')))
 
         if molecule and isinstance(molecule, ATB_Mol):
             structure = self._exceute_api_call(molecule.download_file,
