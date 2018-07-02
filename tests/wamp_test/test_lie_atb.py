@@ -50,11 +50,9 @@ class Run_atb(ComponentSession):
 
     @chainable
     def on_run(self):
-        with self.group_context('mdgroup'):
-
-            result_collect = yield self.call(
-                "mdgroup.lie_atb.endpoint.structure_query",
-                dict_query)
+        result_collect = yield self.call(
+            "mdgroup.lie_atb.endpoint.structure_query",
+            dict_query)
         print(result_collect)
 
 
