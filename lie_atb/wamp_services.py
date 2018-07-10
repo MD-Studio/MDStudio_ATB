@@ -294,6 +294,6 @@ class ATBWampApi(ComponentSession):
         if isinstance(response, list):
             if not len(response):
                 self.log.info('ATB molecule query did not yield any results')
-            return {'result': []}
+            return {'result': response}
         else:
             self.log.error('Unable to execute ATB molecule query')
