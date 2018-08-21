@@ -10,5 +10,5 @@
       "description": "Molecular query results as ATB molecule ID's"
     }
   },
-  "required": ["results"]
+  "required": ["result"]
 }

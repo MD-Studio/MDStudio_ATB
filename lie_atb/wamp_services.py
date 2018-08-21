@@ -79,8 +79,8 @@ class ATBWampApi(ComponentSession):
         api = ATBServerApi(api_token=api_token,
                            timeout=SETTINGS['atb_api_timeout'],
                            debug=SETTINGS['atb_api_debug'],
-                           host=SETTINGS['atb_url'])
-        api.API_FORMAT = u'json'
+                           host=SETTINGS['atb_url'],
+                           api_format=u'json')
         return api
 
     @endpoint('submit', 'atb_submit_request', 'atb_submit_response')
@@ -210,7 +210,7 @@ class ATBWampApi(ComponentSession):
                                                hash=request['atb_hash'], fnme=filename)
             return structure
         else:
-            self.log.error('Unable to retrieve topology/prameter file for molid: {0}'.format(request['molid']))
+            self.log.error('Unable to retrieve topology/parameter file for molid: {0}'.format(request['molid']))
 
     @endpoint('structure_query', 'atb_structure_query_request', 'atb_structure_query_response')
     def atb_structure_query(self, request, claims):
@@ -289,11 +289,13 @@ class ATBWampApi(ComponentSession):
             response = [self._exceute_api_call(api.Molecules.molid, molid=request['molid'])]
         else:
             # Execute ATB molecule search query
-            response = self._exceute_api_call(api.Molecules.search, **request)
+            del request['atb_api_token']
+            response = [mol.moldict for mol in self._exceute_api_call(api.Molecules.search, **request)
+                        if isinstance(mol, ATB_Mol)]
 
         if isinstance(response, list):
             if not len(response):
                 self.log.info('ATB molecule query did not yield any results')
-            return {'result': []}
+            return {'result': response}
         else:
             self.log.error('Unable to execute ATB molecule query')
