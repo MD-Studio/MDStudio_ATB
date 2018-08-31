@@ -31,6 +31,17 @@ class ATBWampApi(ComponentSession):
     def authorize_request(self, uri, claims):
         return True
 
+    @staticmethod
+    def get_mol(geometry):
+        """Retrieve molecular geometry"""
+        if geometry['content'] is not None:
+            mol = geometry['content']
+        else:
+            with open(geometry['path'], 'r') as f:
+                mol = f.read()
+
+        return mol
+
     def _parse_server_error(self, error):
         """
         Parse ATB server JSON error construct
@@ -88,18 +99,15 @@ class ATBWampApi(ComponentSession):
         """
         Submit a new calculation to the ATB server
         """
-
         # Init ATBServerApi
         api = self._init_atb_api(api_token=request['atb_api_token'])
-        if not api:
-            self.log.error('Unable to use the ATB API')
 
         # Open file if needed
-        if request['isfile'] and os.path.isfile(request['pdb']):
-            request['pdb'] = open(request['pdb'], 'r').read()
+        pdb = self.get_mol(request['pdb'])
 
-        response = self._exceute_api_call(api.Molecules.submit, pdb=request['pdb'], netcharge=request['netcharge'],
-                                          moltype=request['moltype'], public=request['public'])
+        response = self._exceute_api_call(
+            api.Molecules.submit, pdb=pdb, netcharge=request['netcharge'],
+            moltype=request['moltype'], public=request['public'])
         if response and response.get(u'status', None) == u'error':
 
             # Check if molecule has been calculated already
@@ -219,10 +227,7 @@ class ATBWampApi(ComponentSession):
 
         16-11-2017: Method only works with HTTP GET
         """
-
-        # Open file if needed
-        if request['isfile'] and os.path.isfile(request['mol']):
-            request['mol'] = open(request['mol'], 'r').read()
+        mol = self.get_mol(request['pdb'])
 
         # Init ATBServerApi
         api = self._init_atb_api(api_token=request['atb_api_token'])
@@ -232,7 +237,7 @@ class ATBWampApi(ComponentSession):
 
         result = self._exceute_api_call(api.Molecules.structure_search,
                                         structure_format=request['structure_format'],
-                                        structure=request['mol'],
+                                        structure=mol,
                                         netcharge=request.get('netcharge', '*'),
                                         method=u'GET')
 
