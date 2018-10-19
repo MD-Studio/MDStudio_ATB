@@ -17,7 +17,10 @@
       "type": "string",
       "description": "ATB supported forcefield version",
       "default": "54A7",
-      "enum": ["53A6", "54A7"]
+      "enum": [
+        "53A6",
+        "54A7"
+      ]
     },
     "fformat": {
       "type": "string",
@@ -33,5 +36,8 @@
       "type": "string"
     }
   },
-  "required": ["atb_api_token", "molid"]
+  "required": [
+    "atb_api_token",
+    "molid"
+  ]
 }

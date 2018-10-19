@@ -10,17 +10,32 @@
       "description": "ATB server API token required for communication"
     },
     "mol": {
-	"$ref": "resource://mdgroup/common_resources/path_file/v1",
-	"description": "Molecular structure to query with"
+      "description": "Molecular structure to query with",
+      "$ref": "resource://mdgroup/common_resources/path_file/v1"
     },
     "netcharge": {
       "type": "number",
       "description": "The net charge of the system"
+    },
+    "structure_format": {
+      "type": "string",
+      "description": "The structure file format",
+      "default": "pdb",
+      "enum": [
+        "pdb",
+        "mol",
+        "mol2",
+        "sdf",
+        "inchi"
+      ]
     },
     "workdir": {
       "type": "string",
       "default": "."
     }
   },
-  "required": ["atb_api_token", "mol"]
+  "required": [
+    "atb_api_token",
+    "mol"
+  ]
 }
