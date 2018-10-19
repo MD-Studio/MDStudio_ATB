@@ -33,14 +33,19 @@ class ATBWampApi(ComponentSession):
 
     @staticmethod
     def get_mol(geometry):
-        """Retrieve molecular geometry"""
-        if geometry['content'] is not None:
-            mol = geometry['content']
-        else:
-            with open(geometry['path'], 'r') as f:
-                mol = f.read()
+        """
+        Retrieve molecular geometry
+        """
 
-        return mol
+        structure = geometry['content']
+        if structure is None and geometry['path']:
+            if os.path.isfile(geometry['path']):
+                with open(geometry['path'], 'r') as molfile:
+                    structure = molfile.read()
+            else:
+                raise IOError('Structure file not defined')
+
+        return structure
 
     def _parse_server_error(self, error):
         """
@@ -92,6 +97,10 @@ class ATBWampApi(ComponentSession):
                            debug=SETTINGS['atb_api_debug'],
                            host=SETTINGS['atb_url'],
                            api_format=u'json')
+
+        if not api:
+            raise IOError('Unable to use the ATB API')
+
         return api
 
     @endpoint('submit', 'atb_submit_request', 'atb_submit_response')
@@ -99,15 +108,15 @@ class ATBWampApi(ComponentSession):
         """
         Submit a new calculation to the ATB server
         """
+
         # Init ATBServerApi
         api = self._init_atb_api(api_token=request['atb_api_token'])
 
         # Open file if needed
         pdb = self.get_mol(request['pdb'])
 
-        response = self._exceute_api_call(
-            api.Molecules.submit, pdb=pdb, netcharge=request['netcharge'],
-            moltype=request['moltype'], public=request['public'])
+        response = self._exceute_api_call(api.Molecules.submit, pdb=pdb, netcharge=request['netcharge'],
+                                          moltype=request['moltype'], public=request['public'])
         if response and response.get(u'status', None) == u'error':
 
             # Check if molecule has been calculated already
@@ -150,9 +159,6 @@ class ATBWampApi(ComponentSession):
 
         # Init ATBServerApi
         api = self._init_atb_api(api_token=request['atb_api_token'])
-        if not api:
-            self.log.error('Unable to use the ATB API')
-            return
 
         # Get the molecule by molid
         molecule = self._exceute_api_call(api.Molecules.molid, molid=request['molid'])
@@ -198,9 +204,6 @@ class ATBWampApi(ComponentSession):
 
         # Init ATBServerApi
         api = self._init_atb_api(api_token=request['atb_api_token'])
-        if not api:
-            self.log.error('Unable to use the ATB API')
-            return
 
         # Get the molecule by molid
         molecule = self._exceute_api_call(api.Molecules.molid, molid=request['molid'])
@@ -227,17 +230,22 @@ class ATBWampApi(ComponentSession):
 
         16-11-2017: Method only works with HTTP GET
         """
-        mol = self.get_mol(request['pdb'])
+
+        # Get structure
+        structure = self.get_mol(request['mol'])
+
+        # Adjust structure format if needed
+        if request['mol']['extension'] and request['mol']['extension'] != request['structure_format']:
+            if not request['mol']['extension'] in ('pdb', 'mol', 'mol2', 'sdf', 'inchi'):
+                raise IOError('File format not supported: {0}'.format(request['mol']['extension']))
+            request['structure_format'] = request['mol']['extension']
 
         # Init ATBServerApi
         api = self._init_atb_api(api_token=request['atb_api_token'])
-        if not api:
-            self.log.error('Unable to use the ATB API')
-            return
 
         result = self._exceute_api_call(api.Molecules.structure_search,
                                         structure_format=request['structure_format'],
-                                        structure=mol,
+                                        structure=structure,
                                         netcharge=request.get('netcharge', '*'),
                                         method=u'GET')
 
@@ -285,9 +293,6 @@ class ATBWampApi(ComponentSession):
 
         # Init ATBServerApi
         api = self._init_atb_api(api_token=request['atb_api_token'])
-        if not api:
-            self.log.error('Unable to use the ATB API')
-            return
 
         # Get molecule directly using ATB molid
         if 'molid' in request:
