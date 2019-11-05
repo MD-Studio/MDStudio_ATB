@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Python unit test function for lie_atb module, run as:
+Python unit test function for mdstudio_atb module, run as:
 ::
     test = module_test_suite()
     runner = unittest.TextTestRunner(verbosity=2)
@@ -23,7 +23,7 @@ sys.path.insert(0, modulepath)
 
 def module_test_suite():
     """
-    Run lie_atb module unit tests
+    Run mdstudio_atb module unit tests
     """
 
     testpath = os.path.join(os.path.dirname(__file__), 'module')

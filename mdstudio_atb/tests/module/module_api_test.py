@@ -13,8 +13,8 @@ import json
 
 from urllib2 import URLError, HTTPError
 
-from lie_atb import ATBServerApi
-from lie_atb.settings import SETTINGS
+from mdstudio_atb import ATBServerApi
+from mdstudio_atb.settings import SETTINGS
 
 
 class TestAPI(unittest2.TestCase):

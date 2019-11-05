@@ -3,7 +3,7 @@
 """
 file: settings.py
 
-lie_atb module wide settings
+mdstudio_atb module wide settings
 """
 
 SETTINGS = {

@@ -1,8 +1,8 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "http://liestudio/schemas/atb_get_topology_request.json",
-  "title": "Get topology",
-  "description": "Retrieve structure topology files from the ATB server by molid",
+  "id": "http://mdstudio/schemas/atb_get_structure_request.json",
+  "title": "Get structure",
+  "description": "Retrieve a structure file from the ATB server by molid",
   "type": "object",
   "properties": {
     "atb_api_token": {
@@ -25,7 +25,7 @@
     "fformat": {
       "type": "string",
       "description": "ATB supported file format",
-      "default": "rtp_allatom"
+      "default": "pdb_allatom_optimised"
     },
     "atb_hash": {
       "type": "string",

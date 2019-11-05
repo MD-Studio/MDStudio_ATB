@@ -9,7 +9,7 @@ file_path = os.path.realpath(__file__)
 root = os.path.split(file_path)[0]
 
 
-def create_workdir(name, path="/tmp/mdstudio/lie_atb"):
+def create_workdir(name, path="/tmp/mdstudio/mdstudio_atb"):
     """Create temporal workdir dir"""
     workdir = join(path, name)
     if not os.path.isdir(workdir):
@@ -23,7 +23,7 @@ def copy_to_workdir(file_path, workdir):
     return join(workdir, base)
 
 
-workdir = create_workdir("lie_atb")
+workdir = create_workdir("mdstudio_atb")
 path_mol = copy_to_workdir(
     join(root, "files/structure.mol2"), workdir)
 
@@ -51,7 +51,7 @@ class Run_atb(ComponentSession):
     @chainable
     def on_run(self):
         result_collect = yield self.call(
-            "mdgroup.lie_atb.endpoint.structure_query",
+            "mdgroup.mdstudio_atb.endpoint.structure_query",
             dict_query)
         print(result_collect)
 

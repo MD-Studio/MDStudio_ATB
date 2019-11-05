@@ -2,4 +2,4 @@
 
 export MD_CONFIG_ENVIRONMENTS=dev,docker
 
-python -u -m lie_atb
+python -u -m mdstudio_atb

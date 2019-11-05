@@ -1,10 +1,10 @@
 #! /usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# package: lie_atb
+# package: mdstudio_atb
 # file: setup.py
 #
-# Part of ‘lie_atb’, a package providing access to the Automatic Topology
+# Part of ‘mdstudio_atb’, a package providing access to the Automatic Topology
 # Builder server https://atb.uq.edu.au using a Python API.
 #
 # Copyright © 2016 Marc van Dijk, VU University Amsterdam, the Netherlands
@@ -23,17 +23,17 @@
 
 from setuptools import setup, find_packages
 
-distribution_name = 'lie_atb'
+distribution_name = 'mdstudio_atb'
 
 setup(
     name=distribution_name,
     version=0.1,
-    description='LIEStudio component wrapping API access to the Automatic Topology Builder server',
+    description='MDStudio component wrapping API access to the Automatic Topology Builder server',
     author="""
     Marc van Dijk - VU University - Amsterdam
     Paul Visscher - Zefiros Software (www.zefiros.eu)
     Felipe Zapata - eScience Center (https://www.esciencecenter.nl/)""",
-    url='https://github.com/MD-Studio/lie_atb',
+    url='https://github.com/MD-Studio/MDStudio_atb',
     license='Apache Software License 2.0',
     keywords='LIEStudio ATB topology molecular force fields',
     platforms=['Any'],

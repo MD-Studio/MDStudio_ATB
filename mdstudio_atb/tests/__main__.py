@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 
 """
-Python runner for lie_atb module unit tests, run as:
+Python runner for mdstudio_atb module unit tests, run as:
 ::
     python tests
 """
@@ -21,11 +21,11 @@ sys.path.insert(0, modulepath)
 
 def module_test_suite():
     """
-    Run lie_atb module unit tests
+    Run mdstudio_atb module unit tests
     """
     loader = unittest2.TestLoader()
 
-    print('Running lie_atb unittests')
+    print('Running mdstudio_atb unittests')
     testpath = os.path.join(os.path.dirname(__file__), 'module')
     suite = loader.discover(testpath, pattern='module_*.py')
     runner = unittest2.TextTestRunner(verbosity=2)

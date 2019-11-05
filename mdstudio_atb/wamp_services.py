@@ -11,8 +11,8 @@ import sys
 import json
 import re
 
-from lie_atb import ATBServerApi, ATB_Mol
-from lie_atb.settings import (
+from mdstudio_atb import ATBServerApi, ATB_Mol
+from mdstudio_atb.settings import (
     SETTINGS, SUPPORTED_FILE_EXTENTIONS, SUPPORTED_STRUCTURE_FILE_FORMATS, SUPPORTED_TOPOLOGY_FILE_FORMATS)
 from mdstudio.api.endpoint import endpoint
 from mdstudio.component.session import ComponentSession

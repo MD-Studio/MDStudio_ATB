@@ -15,14 +15,14 @@ When usig this component in scientific work please cite:
 import os
 import sys
 
-__module__ = 'lie_atb'
+__module__ = 'mdstudio_atb'
 __docformat__ = 'restructuredtext'
 __version__ = '{major:d}.{minor:d}'.format(major=0, minor=1)
 __author__ = 'Marc van Dijk'
 __status__ = 'pre-release beta1'
 __date__ = '15 april 2016'
 __licence__ = 'Apache Software License 2.0'
-__url__ = 'https://github.com/NLeSC/LIEStudio'
+__url__ = 'https://github.com/MD-Studio/MDStudio_atb'
 __copyright__ = "Copyright (c) VU University, Amsterdam"
 __rootpath__ = os.path.dirname(__file__)
 
