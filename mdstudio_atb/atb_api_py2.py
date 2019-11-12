@@ -88,6 +88,24 @@ class API(object):
     API_FORMAT = u'json'
     ENCODING = u'utf-8'
 
+    def __init__(self, host = HOST, api_token = None, debug = False, timeout = TIMEOUT, api_format = API_FORMAT, debug_stream = DEFAULT_DEBUG_STREAM, maximum_attempts = 1):
+        # Attributes
+        self.host = host
+        self.api_token = api_token
+        self.api_format = api_format
+        self.debug = debug
+        self.debug_stream = debug_stream
+        self.log = get_log(__name__ + unicode(getpid()), DEBUG, debug_stream)
+        self.timeout = timeout
+        self.maximum_attempts = maximum_attempts
+        self.deserializer_fct = deserializer_fct_for(api_format)
+
+        # API namespaces
+        self.Molecules = Molecules(self)
+        self.RMSD = RMSD(self)
+        self.Jobs = Jobs(self)
+        self.Statistics = Statistics(self)
+
     def decode_if_necessary(self, x, encoding = u'utf8'):
         if isinstance(x, unicode):
             return x
@@ -177,13 +195,14 @@ class API(object):
                 else:
                     response_content = response.read().decode()
         except HTTPError, e:
-            self.log.error(u'Failed opening url: "{0}{1}{2}".\nResponse was:\n"{3}"\n'.format(
+            error_json = json.loads(self.decode_if_necessary(e.read()))
+            self.log.error('Failed opening url: "{0}{1}{2}".\nResponse was:\n"{3}"\n'.format(
                 full_url,
-                u'?' if data_items else u'',
-                truncate_str_if_necessary(urlencode(data_items) if data_items else u''),
-                self.decode_if_necessary(e.read()),
+                '?' if data_items else '',
+                truncate_str_if_necessary(urlencode(data_items) if data_items else ''),
+                error_json.get('error_msg', '')
             ))
-            raise e
+            raise HTTPError(full_url, e.code, error_json.get('error_msg', ''), e.hdrs, e.fp)
         except URLError, e:
             raise Exception([full_url, unicode(e)])
         except API_Timeout:
@@ -197,23 +216,6 @@ class API(object):
                 return self.safe_urlopen(base_url, data=data, method=method, retry_number=retry_number + 1)
 
         return response_content
-
-    def __init__(self, host = HOST, api_token = None, debug = False, timeout = TIMEOUT, api_format = API_FORMAT, debug_stream = DEFAULT_DEBUG_STREAM, maximum_attempts = 1):
-        # Attributes
-        self.host = host
-        self.api_token = api_token
-        self.api_format = api_format
-        self.debug = debug
-        self.debug_stream = debug_stream
-        self.log = get_log(__name__ + unicode(getpid()), DEBUG, debug_stream)
-        self.timeout = timeout
-        self.maximum_attempts = maximum_attempts
-        self.deserializer_fct = deserializer_fct_for(api_format)
-
-        # API namespaces
-        self.Molecules = Molecules(self)
-        self.RMSD = RMSD(self)
-        self.Jobs = Jobs(self)
 
     def deserialize(self, an_object):
         try:
@@ -354,6 +356,7 @@ class Molecules(API):
             u'pdb_aa': (u'download_file', dict(outputType=u'top', file=u'pdb_allatom_optimised', ffVersion=u"54A7"),),
             u'pdb_allatom_unoptimised': (u'download_file', dict(outputType=u'top', file=u'pdb_allatom_unoptimised', ffVersion=u"54A7"),),
             u'pdb_ua': (u'download_file', dict(outputType=u'top', file=u'pdb_uniatom_optimised', ffVersion=u"54A7"),),
+            u'pdb_uniatom_unoptimised': (u'download_file', dict(outputType=u'top', file=u'pdb_uniatom_unoptimised', ffVersion=u"54A7"),),
             u'yml': (u'generate_mol_data', dict(),),
             u'lgf': (u'download_file', dict(outputType=u'top', file=u'graph.lgf', ffVersion=u"54A7"),),
             u'mtb_aa': (u'download_file', dict(outputType=u'top', file=u'mtb_allatom', ffVersion=u"54A7"),),
@@ -457,3 +460,12 @@ class Molecules(API):
 
     def qm_data(self, **kwargs):
         return self.api.deserialize(self.api.safe_urlopen(self.url(), data=kwargs, method=u'GET'))[u'qm_data']
+
+
+class Statistics(API):
+
+    def __init__(self, api):
+        self.api = api
+
+    def url(self, api_endpoint = None):
+        return self.api.url(self.__class__.__name__.lower(), api_endpoint=api_endpoint)

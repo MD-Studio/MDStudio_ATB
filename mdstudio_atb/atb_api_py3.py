@@ -89,6 +89,24 @@ class API(object):
     API_FORMAT = 'json'
     ENCODING = 'utf-8'
 
+    def __init__(self, host: str = HOST, api_token: Optional[str] = None, debug: bool = False, timeout: int = TIMEOUT, api_format: str = API_FORMAT, debug_stream: Any = DEFAULT_DEBUG_STREAM, maximum_attempts: int = 1) -> None:
+        # Attributes
+        self.host = host
+        self.api_token = api_token
+        self.api_format = api_format
+        self.debug = debug
+        self.debug_stream = debug_stream
+        self.log = get_log(__name__ + str(getpid()), DEBUG, debug_stream)
+        self.timeout = timeout
+        self.maximum_attempts = maximum_attempts
+        self.deserializer_fct = deserializer_fct_for(api_format)
+
+        # API namespaces
+        self.Molecules = Molecules(self)
+        self.RMSD = RMSD(self)
+        self.Jobs = Jobs(self)
+        self.Statistics = Statistics(self)
+
     def decode_if_necessary(self, x: Union[bytes, str], encoding: str = 'utf8') -> Union[str, bytes]:
         if isinstance(x, str):
             return x
@@ -178,13 +196,14 @@ class API(object):
                 else:
                     response_content = response.read().decode()
         except HTTPError as e:
+            error_json = json.loads(self.decode_if_necessary(e.read()))
             self.log.error('Failed opening url: "{0}{1}{2}".\nResponse was:\n"{3}"\n'.format(
                 full_url,
                 '?' if data_items else '',
                 truncate_str_if_necessary(urlencode(data_items) if data_items else ''),
-                self.decode_if_necessary(e.read()),
+                error_json.get('error_msg', '')
             ))
-            raise
+            raise HTTPError(full_url, e.code, error_json.get('error_msg', ''), e.hdrs, e.fp)
         except URLError as e:
             raise Exception([full_url, str(e)])
         except API_Timeout:
@@ -198,23 +217,6 @@ class API(object):
                 return self.safe_urlopen(base_url, data=data, method=method, retry_number=retry_number + 1)
 
         return response_content
-
-    def __init__(self, host: str = HOST, api_token: Optional[str] = None, debug: bool = False, timeout: int = TIMEOUT, api_format: str = API_FORMAT, debug_stream: Any = DEFAULT_DEBUG_STREAM, maximum_attempts: int = 1) -> None:
-        # Attributes
-        self.host = host
-        self.api_token = api_token
-        self.api_format = api_format
-        self.debug = debug
-        self.debug_stream = debug_stream
-        self.log = get_log(__name__ + str(getpid()), DEBUG, debug_stream)
-        self.timeout = timeout
-        self.maximum_attempts = maximum_attempts
-        self.deserializer_fct = deserializer_fct_for(api_format)
-
-        # API namespaces
-        self.Molecules = Molecules(self)
-        self.RMSD = RMSD(self)
-        self.Jobs = Jobs(self)
 
     def deserialize(self, an_object: Any) -> Any:
         try:
@@ -359,6 +361,7 @@ class Molecules(API):
             'pdb_aa': ('download_file', dict(outputType='top', file='pdb_allatom_optimised', ffVersion="54A7"),),
             'pdb_allatom_unoptimised': ('download_file', dict(outputType='top', file='pdb_allatom_unoptimised', ffVersion="54A7"),),
             'pdb_ua': ('download_file', dict(outputType='top', file='pdb_uniatom_optimised', ffVersion="54A7"),),
+            'pdb_uniatom_unoptimised': ('download_file', dict(outputType='top', file='pdb_uniatom_unoptimised', ffVersion="54A7"),),
             'yml': ('generate_mol_data', dict(),),
             'lgf': ('download_file', dict(outputType='top', file='graph.lgf', ffVersion="54A7"),),
             'mtb_aa': ('download_file', dict(outputType='top', file='mtb_allatom', ffVersion="54A7"),),
@@ -394,7 +397,7 @@ class Molecules(API):
                 return deserializer_fct(response_content)
 
         if all([key in kwargs for key in ('atb_format', 'molid')]):
-            # Construct donwload.py request based on requested file format
+            # Construct download.py request based on requested file format
             atb_format = str(kwargs['atb_format'])
             call_kwargs = dict([(key, value) for (key, value) in list(kwargs.items()) if key not in ('atb_format',)])
             api_endpoint, extra_parameters = self.download_urls[atb_format]
@@ -464,38 +467,10 @@ class Molecules(API):
         return self.api.deserialize(self.api.safe_urlopen(self.url(), data=kwargs, method='GET'))['qm_data']
 
 
-def test_api_client():
-    api = API(api_token='<put your token here>', debug=True, api_format='yaml', host='https://atb.uq.edu.au', debug_stream=sys.stderr, timeout=30, maximum_attempts=5)
+class Statistics(API):
 
-    TEST_RMSD = True
-    ETHANOL_MOLIDS = [15608, 23009, 26394]
+    def __init__(self, api: API) -> None:
+        self.api = api
 
-    if TEST_RMSD:
-        print(api.RMSD.matrix(molids=ETHANOL_MOLIDS))
-        print(api.RMSD.align(molids=ETHANOL_MOLIDS[0:2]))
-        print(
-            api.RMSD.align(
-                reference_pdb=api.Molecules.download_file(atb_format='pdb_aa', molid=ETHANOL_MOLIDS[0]),
-                pdb_0=api.Molecules.download_file(atb_format='pdb_aa', molid=ETHANOL_MOLIDS[1]),
-            ),
-        )
-
-    print(api.Molecules.search(any='cyclohexane', curation_trust=0))
-    print(api.Molecules.search(any='cyclohexane', curation_trust='0,2', return_type='molids'))
-    mols = api.Molecules.search(any='cyclohexane', curation_trust='0,2')
-    print([mol.curation_trust for mol in mols])
-
-    water_molecules = api.Molecules.search(formula='H2O')
-    print(water_molecules)
-    for mol in water_molecules:
-        print(mol.iupac, mol.molid)
-    #print(water_molecules[0].download_file(fnme='test.mtb', atb_format='mtb_aa'))
-    print(api.Molecules.download_file(atb_format='yml', molid=21))
-    print(api.Molecules.download_file(atb_format='mtb_aa', molid=21, refresh_cache=True))
-
-    print(mols[0].job(qm_level=2))
-
-    exit()
-
-if __name__ == '__main__':
-    test_api_client()
+    def url(self, api_endpoint: Optional[str] = None) -> str:
+        return self.api.url(self.__class__.__name__.lower(), api_endpoint=api_endpoint)
