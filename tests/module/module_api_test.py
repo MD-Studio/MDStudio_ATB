@@ -10,7 +10,6 @@ import os
 import sys
 import unittest
 import re
-import json
 
 if sys.version_info.major == 2:
     from urllib2 import URLError, HTTPError
@@ -417,7 +416,6 @@ class TestAPI(unittest.TestCase):
 
         ethanol_molids = [15608, 23009, 26394]
 
-        result1 = self.api.RMSD.matrix(molids=ethanol_molids)
         result2 = self.api.RMSD.align(molids=ethanol_molids[0:2])
         result3 = self.api.RMSD.align(
             reference_pdb=self.api.Molecules.download_file(atb_format=u'pdb_aa', molid=ethanol_molids[0]),

@@ -10,7 +10,7 @@ University of Queensland, Brisbane Australia.
 ## Installation Quickstart
 MDStudio ATB can be used in the MDStudio environment as Docker container or as standalone service.
 
-### Install option 1. Pre-compiled Docker container
+### Install option 1 Pre-compiled Docker container
 MDStudio ATB can be installed quickly from a pre-compiled docker image hosted on DockerHub by:
 
     docker pull mdstudio/mdstudio_atb
@@ -34,14 +34,14 @@ connect to it. You can unify this behaviour by adding the MDStudio ATB service t
 And optionally add `mdstudio_atb` to MDStudio/core/auth/settings.dev.yml for automatic authentication and 
 authorization at startup.
 
-### Install option 2. custom build Docker container
+### Install option 2 custom build Docker container
 You can custom build the MDStudio ATB Docker container by cloning the MDStudio_atb GitHub repository and run:
 
     docker build MDStudio_atb/ -t mdstudio/mdstudio_atb
     
 After successful build of the container follow the steps starting from `docker run` in install option 1.
 
-### Install option 3. standalone deployment of the service.
+### Install option 3 standalone deployment of the service.
 If you prefer a custom installation over a (pre-)build docker container you can clone the MDStudio_atb GitHub
 repository and install `mdstudio_atb` locally as:
 

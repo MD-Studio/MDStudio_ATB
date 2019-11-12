@@ -55,7 +55,7 @@ def deserializer_fct_for(api_format):
     if api_format == u'json':
         deserializer_fct = lambda x: json.loads(x)
     elif api_format == u'yaml':
-        deserializer_fct = lambda x: yaml.load(x)
+        deserializer_fct = lambda x: yaml.safe_load(x)
     elif api_format == u'pickle':
         deserializer_fct = lambda x: pickle.loads(x)
     else:
@@ -119,11 +119,11 @@ class API(object):
             raise Exception(u'Invalid input type: {0}'.format(type(x)))
 
     def encoded(self, something):
-        if type(something) == dict:
+        if isinstance(something, dict):
             return dict((self.encoded(key), self.encoded(value)) for (key, value) in something.items())
-        elif type(something) in (unicode, int, str):
+        elif isinstance(something, (unicode, int, str)):
             return something.encode(self.ENCODING)
-        elif something == None:
+        elif something is None:
             return something
         else:
             raise Exception(
@@ -136,7 +136,7 @@ class API(object):
     def safe_urlopen(self, base_url, data = {}, method = u'GET', retry_number = 1):
         if isinstance(data, dict):
             data_items = list(data.items())
-        elif type(data) in (tuple, list):
+        elif isinstance(data, (tuple, list)):
             data_items = list(data)
         else:
             raise Exception(u'Unexpected type: {0}'.format(type(data)))
@@ -330,7 +330,7 @@ class RMSD(API):
     def align(self, **kwargs):
         assert u'molids' in kwargs or (u'reference_pdb' in kwargs and u'pdb_0' in kwargs), MISSING_VALUE
         if u'molids' in kwargs:
-            if type(kwargs[u'molids']) in (list, tuple):
+            if isinstance(kwargs[u'molids'], (list, tuple)):
                 kwargs[u'molids'] = u','.join(imap(unicode, kwargs[u'molids']))
             else:
                 assert u',' in kwargs[u'molids']
@@ -340,7 +340,7 @@ class RMSD(API):
     def matrix(self, **kwargs):
         assert u'molids' in kwargs or (u'reference_pdb' in kwargs and u'pdb_0' in kwargs), MISSING_VALUE
         if u'molids' in kwargs:
-            if type(kwargs[u'molids']) in (list, tuple):
+            if isinstance(kwargs[u'molids'], (list, tuple)):
                 kwargs[u'molids'] = u','.join(imap(unicode, kwargs[u'molids']))
             else:
                 assert u',' in kwargs[u'molids']

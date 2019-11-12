@@ -89,7 +89,8 @@ class API(object):
     API_FORMAT = 'json'
     ENCODING = 'utf-8'
 
-    def __init__(self, host: str = HOST, api_token: Optional[str] = None, debug: bool = False, timeout: int = TIMEOUT, api_format: str = API_FORMAT, debug_stream: Any = DEFAULT_DEBUG_STREAM, maximum_attempts: int = 1) -> None:
+    def __init__(self, host: str = HOST, api_token: Optional[str] = None, debug: bool = False, timeout: int = TIMEOUT,
+            api_format: str = API_FORMAT, debug_stream: Any = DEFAULT_DEBUG_STREAM, maximum_attempts: int = 1) -> None:
         # Attributes
         self.host = host
         self.api_token = api_token
@@ -122,9 +123,9 @@ class API(object):
     def encoded(self, something: Any) -> Union[Dict[bytes, Any], bytes, None]:
         if type(something) == dict:
             return {self.encoded(key): self.encoded(value) for (key, value) in something.items()}
-        elif type(something) in (str, int):
+        elif isinstance(something, (str, int)):
             return something.encode(self.ENCODING)
-        elif something == None:
+        elif something is None:
             return something
         else:
             raise Exception(
@@ -256,8 +257,6 @@ class ATB_Mol(object):
         if 'molid' in kwargs: del kwargs['molid']
         return self.api.Molecules.generate_mol_data(molid=self.molid, **kwargs)
 
-# 
-
     def job(self, **kwargs) -> API_RESPONSE:
         return self.api.Molecules.job(molid=self.molid, **kwargs)
 
@@ -345,7 +344,7 @@ class RMSD(API):
     def matrix(self, **kwargs) -> API_RESPONSE:
         assert 'molids' in kwargs or ('reference_pdb' in kwargs and 'pdb_0' in kwargs), MISSING_VALUE
         if 'molids' in kwargs:
-            if type(kwargs['molids']) in (list, tuple):
+            if isinstance(kwargs['molids'], (list, tuple)):
                 kwargs['molids'] = ','.join(map(str, kwargs['molids']))
             else:
                 assert ',' in kwargs['molids']
