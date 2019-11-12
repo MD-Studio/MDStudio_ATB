@@ -30,7 +30,7 @@
     "atb_hash": {
       "type": "string",
       "description": "ATB server hash version",
-      "default": "HEAD"
+      "default": "LATEST"
     },
     "workdir": {
       "type": "string"
