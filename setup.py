@@ -49,8 +49,5 @@ setup(
         'Topic :: Utilities',
         'Operating System :: OS Independent',
         'Intended Audience :: Science/Research',
-    ],
-    extras_require={
-        'test': ['coverage']
-    }
+    ]
 )
