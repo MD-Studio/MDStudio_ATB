@@ -39,7 +39,7 @@ setup(
     platforms=['Any'],
     packages=find_packages(),
     py_modules=[distribution_name],
-    install_requires=['requests'],
+    install_requires=['requests', 'PyYAML'],
     include_package_data=True,
     zip_safe=True,
     classifiers=[
