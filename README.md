@@ -1,5 +1,9 @@
 # MDStudio ATB
 
+[![Build Status](https://travis-ci.org/MD-Studio/MDStudio_ATB.svg?branch=master)](https://travis-ci.org/MD-Studio/MDStudio_ATB)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/697c033fd7674ecea28c089150a25dfa)](https://www.codacy.com/app/marcvdijk/MDStudio_ATB?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=MD-Studio/MDStudio_ATB&amp;utm_campaign=Badge_Grade)
+[![codecov](https://codecov.io/gh/MD-Studio/MDStudio_ATB/branch/master/graph/badge.svg)](https://codecov.io/gh/MD-Studio/MDStudio_ATB)
+
 The MDStudio ATB service provides access to the [Automatic Topology Builder](https://atb.uq.edu.au) server (ATB) at the 
 University of Queensland, Brisbane Australia.
 
