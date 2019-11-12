@@ -25,7 +25,7 @@ def copy_to_workdir(file_path, workdir):
 
 workdir = create_workdir("mdstudio_atb")
 path_mol = copy_to_workdir(
-    join(root, "files/structure.mol2"), workdir)
+    join(root, "../files/structure.mol2"), workdir)
 
 dict_query = {
     "netcharge": 0,
