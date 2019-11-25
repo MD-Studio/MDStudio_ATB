@@ -10,6 +10,10 @@ University of Queensland, Brisbane Australia.
 ## Installation Quickstart
 MDStudio ATB can be used in the MDStudio environment as Docker container or as standalone service.
 
+> **NOTE:** To use the ATB service you are required to have a user account on the ATB server. On your ATB server 
+  account page you should generate an ATB API token that is required for communication with the service endpoints via
+  the `atb_api_token` argument.
+
 ### Install option 1 Pre-compiled Docker container
 MDStudio ATB can be installed quickly from a pre-compiled docker image hosted on DockerHub by:
 
