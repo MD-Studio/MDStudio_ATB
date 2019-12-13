@@ -13,6 +13,7 @@ global:
     - COMMIT_AUTHOR_EMAIL: "f.zapata@esciencecenter.nl"
 
 install:
+  # install library
   - pip install codecov
   - pip install .
 
