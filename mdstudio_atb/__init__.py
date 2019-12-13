@@ -4,7 +4,7 @@
 LIEStudio connector component for the Automated Topology Builder (ATB) server
 at https://atb.uq.edu.au
 
-When usig this component in scientific work please cite:
+When using this component in scientific work please cite:
 
  -  Malde AK, Zuo L, Breeze M, Stroet M, Poger D, Nair PC, Oostenbrink C, Mark AE.
     An Automated force field Topology Builder (ATB) and repository: version 1.0.
@@ -17,10 +17,10 @@ import sys
 
 __module__ = 'mdstudio_atb'
 __docformat__ = 'restructuredtext'
-__version__ = '{major:d}.{minor:d}'.format(major=0, minor=1)
+__version__ = '{major:d}.{minor:d}'.format(major=1, minor=0)
 __author__ = 'Marc van Dijk'
-__status__ = 'pre-release beta1'
-__date__ = '15 april 2016'
+__status__ = 'release alpha1'
+__date__ = '12 december 2019'
 __licence__ = 'Apache Software License 2.0'
 __url__ = 'https://github.com/MD-Studio/MDStudio_atb'
 __copyright__ = "Copyright (c) VU University, Amsterdam"

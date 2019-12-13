@@ -27,7 +27,7 @@ distribution_name = 'mdstudio_atb'
 
 setup(
     name=distribution_name,
-    version=0.1,
+    version=1.0,
     description='MDStudio component wrapping API access to the Automatic Topology Builder server',
     author="""
     Marc van Dijk - VU University - Amsterdam
@@ -38,6 +38,7 @@ setup(
     keywords='LIEStudio ATB topology molecular force fields',
     platforms=['Any'],
     packages=find_packages(),
+    package_data={distribution_name: ['schemas/endpoints/*']},
     py_modules=[distribution_name],
     install_requires=['requests', 'PyYAML'],
     include_package_data=True,
