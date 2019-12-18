@@ -14,6 +14,8 @@ import re
 from mdstudio_atb import ATBServerApi, ATB_Mol
 from mdstudio_atb.settings import (
     SETTINGS, SUPPORTED_FILE_EXTENTIONS, SUPPORTED_STRUCTURE_FILE_FORMATS, SUPPORTED_TOPOLOGY_FILE_FORMATS)
+
+from autobahn.wamp import RegisterOptions
 from mdstudio.api.endpoint import endpoint
 from mdstudio.component.session import ComponentSession
 
@@ -103,7 +105,7 @@ class ATBWampApi(ComponentSession):
 
         return api
 
-    @endpoint('submit', 'atb_submit_request', 'atb_submit_response')
+    @endpoint('submit', 'atb_submit_request', 'atb_submit_response', options=RegisterOptions(invoke=u'roundrobin'))
     def atb_submit_calculation(self, request, claims):
         """
         Submit a new calculation to the ATB server
@@ -133,7 +135,8 @@ class ATBWampApi(ComponentSession):
                 response = [self._exceute_api_call(api.Molecules.molid, molid=molid)]
                 return {'result': [mol.moldict for mol in response if isinstance(mol, ATB_Mol)]}
 
-    @endpoint('get_structure', 'atb_get_structure_request', 'atb_get_structure_response')
+    @endpoint('get_structure', 'atb_get_structure_request', 'atb_get_structure_response',
+              options=RegisterOptions(invoke=u'roundrobin'))
     def atb_structure_download(self, request, claims):
         """
         Retrieve a structure file from the ATB server by molid
@@ -176,7 +179,8 @@ class ATBWampApi(ComponentSession):
         else:
             self.log.error('Unable to retrieve structure file for molid: {0}'.format(request['molid']))
 
-    @endpoint('get_topology', 'atb_get_topology_request', 'atb_get_topology_response')
+    @endpoint('get_topology', 'atb_get_topology_request', 'atb_get_topology_response',
+              options=RegisterOptions(invoke=u'roundrobin'))
     def atb_topology_download(self, request, claims):
         """
         Retrieve a topology and parameter files from the ATB server by molid
@@ -223,7 +227,8 @@ class ATBWampApi(ComponentSession):
         else:
             self.log.error('Unable to retrieve topology/parameter file for molid: {0}'.format(request['molid']))
 
-    @endpoint('structure_query', 'atb_structure_query_request', 'atb_structure_query_response')
+    @endpoint('structure_query', 'atb_structure_query_request', 'atb_structure_query_response',
+              options=RegisterOptions(invoke=u'roundrobin'))
     def atb_structure_query(self, request, claims):
         """
         Query the ATB server database for molecules based on a structure
@@ -256,7 +261,8 @@ class ATBWampApi(ComponentSession):
 
         return output
 
-    @endpoint('molecule_query', 'atb_molecule_query_request', 'atb_molecule_query_response')
+    @endpoint('molecule_query', 'atb_molecule_query_request', 'atb_molecule_query_response',
+              options=RegisterOptions(invoke=u'roundrobin'))
     def atb_molecule_query(self, request, claims):
         """
         Query the ATB server database for molecules based on molecule meta-data
