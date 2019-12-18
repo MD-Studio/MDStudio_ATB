@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "http://mdstudio/schemas/atb_get_structure_request.json",
+  "id": "http://mdstudio/schemas/endpoints/atb_get_structure_request.v1.json",
   "title": "Get structure",
   "description": "Retrieve a structure file from the ATB server by molid",
   "type": "object",

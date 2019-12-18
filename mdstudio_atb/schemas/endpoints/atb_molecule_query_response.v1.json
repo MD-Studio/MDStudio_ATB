@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "http://mdstudio/schemas/atb_molecule_query_response.json",
+  "id": "http://mdstudio/schemas/endpoints/atb_molecule_query_response.v1.json",
   "title": "Molecule query results",
   "description": "Query the ATB server database for molecules based on molecule meta-data",
   "type": "object",

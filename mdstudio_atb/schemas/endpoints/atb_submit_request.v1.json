@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "http://mdstudio/schemas/atb_submit_request.json",
+  "id": "http://mdstudio/schemas/endpoints/atb_submit_request.v1.json",
   "title": "ATB submit",
   "description": "Submit calculation to ATB server",
   "type": "object",

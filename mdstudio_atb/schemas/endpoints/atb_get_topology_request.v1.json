@@ -1,6 +1,6 @@
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
-  "id": "http://mdstudio/schemas/atb_get_topology_request.json",
+  "id": "http://mdstudio/schemas/endpoints/atb_get_topology_request.v1.json",
   "title": "Get topology",
   "description": "Retrieve structure topology files from the ATB server by molid",
   "type": "object",
